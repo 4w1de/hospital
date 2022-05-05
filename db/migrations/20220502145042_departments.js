@@ -1,6 +1,6 @@
-exports.up = (knex) => 
+exports.up = (knex) =>
     knex.schema.createTable('DEPARTMENTS', (table) => {
-        table.increments('id');
+        table.integer('id').notNullable().unique();
         table.string('name').notNullable();
         table.string('address', 500).notNullable();
         table
@@ -11,6 +11,6 @@ exports.up = (knex) =>
             .timestamp('last_update_timestamp')
             .notNullable()
             .defaultTo(knex.fn.now());
-    })
+    });
 
- exports.down = (knex) => knex.schema.dropTable('DEPARTMENTS');
+exports.down = (knex) => knex.schema.dropTable('DEPARTMENTS');

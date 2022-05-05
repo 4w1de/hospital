@@ -1,11 +1,23 @@
-exports.up = (knex) => 
+exports.up = (knex) =>
     knex.schema.createTable('APPOINTMENT', (table) => {
-        table.increments('id');
+        table.integer('id').notNullable().unique();
         table.date('date').notNullable();
         table.time('start').notNullable();
         table.time('end').notNullable();
-        table.integer('employeeId').references('id').inTable('EMPLOYEE');
-        table.integer('customerId').references('id').inTable('CUSTOMER');
+        table
+            .integer('employeeId')
+            .unsigned()
+            .references('id')
+            .inTable('EMPLOYEE')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+        table
+            .integer('customerId')
+            .unsigned()
+            .references('id')
+            .inTable('CUSTOMER')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
         table
             .timestamp('created_timestamp')
             .notNullable()
@@ -14,6 +26,6 @@ exports.up = (knex) =>
             .timestamp('last_update_timestamp')
             .notNullable()
             .defaultTo(knex.fn.now());
-    })
+    });
 
- exports.down = (knex) => knex.schema.dropTable('APPOINTMENT');
+exports.down = (knex) => knex.schema.dropTable('APPOINTMENT');

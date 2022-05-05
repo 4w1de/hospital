@@ -1,4 +1,4 @@
-const {Model} = require('objection');
+const { Model } = require('objection');
 
 class Appointment extends Model {
     static get tableName() {
@@ -17,7 +17,7 @@ class Appointment extends Model {
                 },
             },
             employee: {
-                relation: Model.BelongsToOneRelation,
+                relation: Model.HasOneRelation,
                 modelClass: Employee,
                 join: {
                     from: 'APPOINTMENT.employeeId',

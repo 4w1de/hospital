@@ -10,6 +10,6 @@ const setupDB = () => {
     });
 
     Model.knex(knex);
-}
+};
 
 module.exports = setupDB;

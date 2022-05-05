@@ -1,7 +1,13 @@
-exports.up = (knex) => 
+exports.up = (knex) =>
     knex.schema.createTable('USERS', (table) => {
-        table.increments('id');
-        table.integer('employeeId').references('id').inTable('EMPLOYEE');
+        table.integer('id').notNullable().unique();
+        table
+            .integer('employeeId')
+            .unsigned()
+            .references('id')
+            .inTable('EMPLOYEE')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
         table.string('password').notNullable();
         table.integer('role').notNullable();
         table
@@ -12,6 +18,6 @@ exports.up = (knex) =>
             .timestamp('last_update_timestamp')
             .notNullable()
             .defaultTo(knex.fn.now());
-    })
+    });
 
- exports.down = (knex) => knex.schema.dropTable('USERS');
+exports.down = (knex) => knex.schema.dropTable('USERS');

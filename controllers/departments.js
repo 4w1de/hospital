@@ -8,7 +8,7 @@ module.exports.getAll = async (req, res) => {
     } catch (e) {
         errorHandler(res, e);
     }
-}
+};
 module.exports.getById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -17,28 +17,31 @@ module.exports.getById = async (req, res) => {
     } catch (e) {
         errorHandler(res, e);
     }
-}
+};
 module.exports.add = async (req, res) => {
     try {
-        const {name, address} = req.body;
-        const existsDepartment = await Departments.query().where({
-            name: name,
-            address: address,
-        }).first();
+        const { id, name, address } = req.body;
+        const existsDepartment = await Departments.query()
+            .where({
+                name,
+                address,
+            })
+            .first();
 
-        if(existsDepartment) {
-            throw new Error("Department already exists");
+        if (existsDepartment) {
+            throw new Error('Department already exists');
         }
 
         const department = await Departments.query().insert({
-            name: name,
-            address: address,
+            id,
+            name,
+            address,
         });
         res.status(201).json(department);
     } catch (e) {
         errorHandler(res, e);
     }
-}
+};
 module.exports.deleteById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -47,18 +50,18 @@ module.exports.deleteById = async (req, res) => {
     } catch (e) {
         errorHandler(res, e);
     }
-}
+};
 module.exports.updateById = async (req, res) => {
     try {
-        const {id} = req.params;
-        const {name, address} = req.body;
+        const { id } = req.params;
+        const { name, address } = req.body;
         const department = await Departments.query().where('id', id).update({
-            name: name,
-            address: address,
-            last_update_timestamp: new Date()
-        })
+            name,
+            address,
+            last_update_timestamp: new Date(),
+        });
         res.status(200).json(department);
     } catch (e) {
         errorHandler(res, e);
     }
-}
+};

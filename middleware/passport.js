@@ -9,21 +9,70 @@ const Employee = require('../models/Employee');
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT,
-}
-
-module.exports = (passport) => {
+};
+const passportAdmin = (passport) => {
     passport.use(
+        'passportAdmin',
         new JwtStrategy(options, async (payload, done) => {
             try {
-                const user = await Employee.query().select('id', 'email').where('id', payload.userId).first();
-                if(user) {
+                const user = await Employee.query()
+                    .select('id', 'email')
+                    .where('id', payload.userId)
+                    .first();
+                if (user && payload.role <= 0) {
                     done(null, user);
                 } else {
                     done(null, false);
                 }
-            } catch(e) {
+            } catch (e) {
                 console.log(e);
             }
-        })
-    )
-}
+        }),
+    );
+};
+const passportDoctor = (passport) => {
+    passport.use(
+        'passportDoctor',
+        new JwtStrategy(options, async (payload, done) => {
+            try {
+                const user = await Employee.query()
+                    .select('id', 'email')
+                    .where('id', payload.userId)
+                    .first();
+                if (user && payload.role <= 2) {
+                    done(null, user);
+                } else {
+                    done(null, false);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }),
+    );
+};
+const passportReception = (passport) => {
+    passport.use(
+        'passportReception',
+        new JwtStrategy(options, async (payload, done) => {
+            try {
+                const user = await Employee.query()
+                    .select('id', 'email')
+                    .where('id', payload.userId)
+                    .first();
+                if (user && payload.role <= 1) {
+                    done(null, user);
+                } else {
+                    done(null, false);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }),
+    );
+};
+
+module.exports = {
+    passportAdmin,
+    passportDoctor,
+    passportReception,
+};

@@ -1,4 +1,4 @@
-const {Model} = require('objection');
+const { Model } = require('objection');
 
 class Employee extends Model {
     static get tableName() {
