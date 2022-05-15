@@ -37,6 +37,7 @@ module.exports.add = async (req, res) => {
             name,
             address,
         });
+
         res.status(201).json(department);
     } catch (e) {
         errorHandler(res, e);
