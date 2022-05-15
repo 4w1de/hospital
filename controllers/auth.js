@@ -16,7 +16,6 @@ const login = async (req, res) => {
                 req.body.password,
                 user.password,
             );
-            console.log(user.password);
             if (passwordResult) {
                 const token = jwt.sign(
                     {
