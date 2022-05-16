@@ -1,14 +1,13 @@
 const Appointment = require('../models/Appointment');
 const errorHandler = require('../utils/errorHandler');
+const appointmentAPI = require('../api/appointment');
 
 module.exports.getAll = async (req, res) => {
     try {
         const { page = 1 } = req.query;
-        const { results: appointment, total } = await Appointment.query()
-            .withGraphFetched('[customer, employee]')
-            .orderBy('last_update_timestamp', 'desc')
-            .page(page - 1, 5);
-        res.status(200).json({ appointment, total });
+        appointmentAPI.getAll(page).then((response) => {
+            res.status(200).json(response);
+        });
     } catch (e) {
         errorHandler(res, e);
     }
@@ -16,25 +15,18 @@ module.exports.getAll = async (req, res) => {
 module.exports.getById = async (req, res) => {
     try {
         const { id } = req.params;
-        const appointment = await Appointment.query().where('id', id).first();
-        res.status(200).json(appointment);
+        appointmentAPI.getById(id).then((response) => {
+            res.status(200).json(response);
+        });
     } catch (e) {
         errorHandler(res, e);
     }
 };
 module.exports.add = async (req, res) => {
     try {
-        const { id, date, start, end, employeeId, customerId } = req.body;
-
-        const appointment = await Appointment.query().insert({
-            id,
-            date,
-            start,
-            end,
-            employeeId,
-            customerId,
+        appointmentAPI.add(req.body).then((response) => {
+            res.status(201).json(response);
         });
-        res.status(201).json(appointment);
     } catch (e) {
         errorHandler(res, e);
     }
@@ -42,8 +34,9 @@ module.exports.add = async (req, res) => {
 module.exports.deleteById = async (req, res) => {
     try {
         const { id } = req.params;
-        const appointment = await Appointment.query().where('id', id).del();
-        res.status(200).json({ message: 'deleted' });
+        appointmentAPI.deleteById(id).then((response) => {
+            res.status(200).json({ message: 'deleted' });
+        });
     } catch (e) {
         errorHandler(res, e);
     }
@@ -51,16 +44,9 @@ module.exports.deleteById = async (req, res) => {
 module.exports.updateById = async (req, res) => {
     try {
         const { id } = req.params;
-        const { date, start, end, employeeId, customerId } = req.body;
-        const appointment = await Appointment.query().where('id', id).update({
-            date,
-            start,
-            end,
-            employeeId,
-            customerId,
-            last_update_timestamp: new Date(),
+        appointmentAPI.updateById(id, req.body).then((response) => {
+            res.status(200).json(response);
         });
-        res.status(200).json(appointment);
     } catch (e) {
         errorHandler(res, e);
     }

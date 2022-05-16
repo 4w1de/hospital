@@ -58,31 +58,17 @@ io.on('connection', (socket) => {
         console.log(`socket ${socket.id} disconnected`);
     });
 
-    socket.on('appoint', async () => {
-        const page = 1;
-        const { results: appointment, total } = await Appointment.query()
-            .withGraphFetched('[customer, employee]')
-            .orderBy('last_update_timestamp', 'desc')
-            .page(page - 1, 5);
-        io.sockets.emit('appointList', { appointment, total });
+    socket.on('appoint', () => {
+        io.sockets.emit('appointList');
     });
-    socket.on('cust', async () => {
-        const page = 1;
-        const size = 5;
-        const { results: customer, total } = await Customer.query()
-            .orderBy('last_update_timestamp', 'desc')
-            .page(page - 1, size);
-        io.sockets.emit('custList', { customer, total });
+    socket.on('cust', () => {
+        io.sockets.emit('custList');
     });
-    socket.on('depart', async () => {
-        const departments = await Departments.query();
-        io.sockets.emit('departList', departments);
+    socket.on('depart', () => {
+        io.sockets.emit('departList');
     });
-    socket.on('empl', async () => {
-        const employee = await Employee.query()
-            .orderBy('last_update_timestamp', 'desc')
-            .withGraphFetched('departments');
-        io.sockets.emit('emplList', employee);
+    socket.on('empl', () => {
+        io.sockets.emit('emplList');
     });
 });
 
