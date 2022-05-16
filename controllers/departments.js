@@ -1,10 +1,12 @@
 const Departments = require('../models/Departments');
 const errorHandler = require('../utils/errorHandler');
+const departmentsAPI = require('../api/departments');
 
 module.exports.getAll = async (req, res) => {
     try {
-        const departments = await Departments.query();
-        res.status(200).json(departments);
+        departmentsAPI.getAll().then((response) => {
+            res.status(200).json(response);
+        });
     } catch (e) {
         errorHandler(res, e);
     }
@@ -12,15 +14,17 @@ module.exports.getAll = async (req, res) => {
 module.exports.getById = async (req, res) => {
     try {
         const { id } = req.params;
-        const department = await Departments.query().where('id', id).first();
-        res.status(200).json(department);
+
+        departmentsAPI.getById(id).then((response) => {
+            res.status(200).json(response);
+        });
     } catch (e) {
         errorHandler(res, e);
     }
 };
 module.exports.add = async (req, res) => {
     try {
-        const { id, name, address } = req.body;
+        const { name, address } = req.body;
         const existsDepartment = await Departments.query()
             .where({
                 name,
@@ -32,13 +36,9 @@ module.exports.add = async (req, res) => {
             throw new Error('Department already exists');
         }
 
-        const department = await Departments.query().insert({
-            id,
-            name,
-            address,
+        departmentsAPI.add(req.body).then((response) => {
+            res.status(200).json(response);
         });
-
-        res.status(201).json(department);
     } catch (e) {
         errorHandler(res, e);
     }
@@ -46,8 +46,10 @@ module.exports.add = async (req, res) => {
 module.exports.deleteById = async (req, res) => {
     try {
         const { id } = req.params;
-        const department = await Departments.query().where('id', id).del();
-        res.status(200).json(department);
+
+        departmentsAPI.deleteById(id).then((response) => {
+            res.status(200).json(response);
+        });
     } catch (e) {
         errorHandler(res, e);
     }
@@ -55,13 +57,10 @@ module.exports.deleteById = async (req, res) => {
 module.exports.updateById = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, address } = req.body;
-        const department = await Departments.query().where('id', id).update({
-            name,
-            address,
-            last_update_timestamp: new Date(),
+
+        departmentsAPI.updateById(id, req.body).then((response) => {
+            res.status(200).json(response);
         });
-        res.status(200).json(department);
     } catch (e) {
         errorHandler(res, e);
     }
